@@ -1,0 +1,115 @@
+#include "Graphics.h"
+
+bool Graphics::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
+{
+	int flags = 0;
+	if (fullscreen) { flags = SDL_WINDOW_FULLSCREEN; }
+
+	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
+		std::cout << "SDL initialised." << std::endl;
+
+		window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+		if (window) {
+			std::cout << "Window created." << std::endl;
+		}
+		else {
+			std::cout << "WINDOW CREATION FAILED" << std::endl;
+		}
+
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+		if (renderer) {
+			std::cout << "Renderer created." << std::endl;
+		}
+		else {
+			std::cout << "RENDERER CREATION FAILED" << std::endl;
+		}
+
+		return true;
+	}
+	else {
+		std::cout << "SDL INIT FAILED" << std::endl;
+	}
+
+	return false;
+}
+
+SDL_Renderer* Graphics::getRenderer()
+{
+	return renderer;
+}
+
+void Graphics::clean()
+{
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	SDL_Quit();
+}
+
+void Graphics::setColor(Color col)
+{
+	SDL_SetRenderDrawColor(renderer, col.red, col.green, col.blue, 255);
+}
+
+void Graphics::setBackground(Color col)
+{
+	setColor(col);
+	SDL_RenderClear(renderer);
+}
+
+void Graphics::startDrawing()
+{
+	setBackground(Black);
+}
+
+void Graphics::finishDrawing()
+{
+	// Display everything
+	SDL_RenderPresent(renderer);
+}
+
+void Graphics::drawLine(int x1, int y1, int x2, int y2, Color col)
+{
+	setColor(col);
+	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
+void Graphics::drawRect(const SDL_Rect *rec, Color col)
+{
+	setColor(col);
+	SDL_RenderDrawRect(renderer, rec);
+}
+
+void Graphics::drawCircle(int x, int y, int radius, Color col, bool fill)
+{
+	setColor(col);
+	int i = 0, j = 0, dist = 0;
+
+	for (i = (x - radius) ; i <= (x + radius); i++)
+	{
+		for (j = (y - radius) ; j <= (y + radius); j++)
+		{
+			// Distance between two points on a plane
+			dist = int(sqrt((i - x) * (i - x) + (j - y) * (j - y)));	
+
+			// If the distance equals our radius, it means that point belongs to the circle
+			if (dist == radius || (fill == true && dist < radius)) {
+				SDL_RenderDrawPoint(renderer, i, j);
+			}				
+		}
+	}
+}
+
+void Graphics::drawSomething()
+{
+	// Triangle
+	drawLine(100, 200, 250, 350, Green);
+	drawLine(250, 350, 100, 350, Green);
+	drawLine(100, 350, 100, 200, Green);
+
+	// Circle
+	drawCircle(400, 280, 80, Red, false);
+
+	// Rectangle
+	SDL_Rect rect = { 580, 200, 170, 250 }; //x1, y1, w, h
+	drawRect(&rect, Blue);
+}
