@@ -11,16 +11,16 @@ void Game::handleEvents()
 		case SDL_KEYDOWN:
 			switch (ent.key.keysym.sym) {
 			case SDLK_RIGHT:
-				player.xvel = player.speed;
+				player.setVelocity(player.getSpeed(), player.getYVelocity());
 				break;
 			case SDLK_LEFT:
-				player.xvel = -player.speed;
+				player.setVelocity(-player.getSpeed(), player.getYVelocity());
 				break;
 			case SDLK_UP:
-				player.yvel = -player.speed;
+				player.setVelocity(player.getXVelocity(), -player.getSpeed());
 				break;
 			case SDLK_DOWN:
-				player.yvel = player.speed;
+				player.setVelocity(player.getXVelocity(), player.getSpeed());
 				break;
 			default:
 				break;
@@ -30,18 +30,21 @@ void Game::handleEvents()
 		case SDL_KEYUP:
 			switch (ent.key.keysym.sym) {
 			case SDLK_RIGHT:
-				if (player.xvel > 0) { player.xvel = 0; }
+				if (player.getXVelocity() > 0) { player.setVelocity(0, player.getYVelocity()); }
 				break;
 			case SDLK_LEFT:
-				if (player.xvel < 0) { player.xvel = 0; }
+				if (player.getXVelocity() < 0) { player.setVelocity(0, player.getYVelocity()); }
 				break;
 			case SDLK_UP:
-				if (player.yvel < 0) { player.yvel = 0; }
+				if (player.getYVelocity() < 0) { player.setVelocity(player.getXVelocity(), 0); }
 				break;
 			case SDLK_DOWN:
-				if (player.yvel > 0) { player.yvel = 0; }
+				if (player.getYVelocity() > 0) { player.setVelocity(player.getXVelocity(), 0); }
 				break;
-
+			case SDLK_t:
+				printDebugInfo();
+				break;
+			
 			default:
 				break;
 			}

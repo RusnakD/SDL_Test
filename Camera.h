@@ -13,6 +13,7 @@ public:
 	void drawDeadZone();
 
 	SDL_Point getOffset();
+	SDL_Rect getZoneRect();
 private:
 	// This will be used to calculate drawing position of objects on the screen
 	SDL_Point offset = { 0, 0 };
@@ -21,7 +22,7 @@ private:
 	SDL_Rect deadZone = {};
 
 	// Margin between the dead zone rectangle and the edge of the screen / window
-	const int deadZoneMargin = 100;		
+	const int deadZoneMargin = 150;		
 
 	// Used for drawing the deadzone rectangle - testing purposes only
 	SDL_Renderer* ren = nullptr;

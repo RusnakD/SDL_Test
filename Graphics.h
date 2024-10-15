@@ -13,7 +13,7 @@
 class Graphics
 {
 public:
-	bool init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
+	bool init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen);
 	SDL_Renderer* getRenderer();
 	void clean();
 
@@ -26,7 +26,7 @@ public:
 	void drawRect(const SDL_Rect *rec, Color col);
 	void drawCircle(int x, int y, int radius, Color col, bool fill);
 
-	void drawSomething();
+	void drawSomething(SDL_Point camOffset);
 private:
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;

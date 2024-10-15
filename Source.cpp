@@ -12,3 +12,10 @@ int main()
 
 	return 0;
 }
+
+// BOUNDARIES COLLISION
+
+// set camera to player's point at start
+// 
+// re-do camera movements from player to camera directly?
+// camera - free mode / attach to player??

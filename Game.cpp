@@ -25,6 +25,9 @@ Game::Game(const char* title, int width, int height, bool fullscreen)
 
 	player.init(200, 200, "img/smile.png", gfx.getRenderer());
 
+	// This will give the player the map's rect (edges) that are checked whenever player moves (to prevent going out of the map)
+	player.setMapBoundaries(map.getMapBoundaries());
+
 	lightTex.load("img/light.png", gfx.getRenderer());
 	lightTex.setTransparency(lightTransparency);
 }
@@ -35,6 +38,16 @@ Game::~Game()
 	std::cout << "Cleaning done." << std::endl;
 }
 
+void Game::printDebugInfo()
+{
+	using namespace std;
+	cout << endl << endl;
+	cout << "Player worldX: " << player.getPosition().x << endl;
+	cout << "Player worldY: " << player.getPosition().y << endl;
+	cout << "Player xPos: " << player.getScreenPosition().x << endl;
+	cout << "Player yPos: " << player.getScreenPosition().y << endl;
+}
+
 bool Game::running()
 {
 	return isRunning;
@@ -42,8 +55,7 @@ bool Game::running()
 
 void Game::update()
 {
-	player.move();
-	//player.rotate();		// Was just testing texture rotations
+	player.move(camera);
 }
 
 void Game::capFramerate()
@@ -73,11 +85,11 @@ void Game::render()
 {
 	gfx.startDrawing();
 
-	gfx.drawSomething();
-	player.draw();
-	lightTex.draw(lightPosX - (lightTex.getTextureWidth() / 2), lightPosY - (lightTex.getTextureHeight() / 2), gfx.getRenderer());
-
-	camera.drawDeadZone();		// This should be drawn on the top of everything, but it is at the bottom
+	map.draw(gfx, camera.getOffset());
+	gfx.drawSomething(camera.getOffset());
+	player.draw(gfx.getRenderer());
+	//lightTex.draw(lightPosX - (lightTex.getTextureWidth() / 2), lightPosY - (lightTex.getTextureHeight() / 2), gfx.getRenderer());
+	//camera.drawDeadZone();
 
 	gfx.finishDrawing();
 }

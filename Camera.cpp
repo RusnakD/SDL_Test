@@ -17,8 +17,8 @@ Camera::~Camera()
 
 void Camera::move(int diffX, int diffY)
 {
-    offset.x -= diffX;
-    offset.y -= diffY;
+    offset.x += diffX;
+    offset.y += diffY;
 }
 
 void Camera::setRenderer(SDL_Renderer* argRen)
@@ -30,11 +30,16 @@ void Camera::setRenderer(SDL_Renderer* argRen)
 void Camera::drawDeadZone()
 {
     SDL_SetRenderDrawBlendMode(ren, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderDrawColor(ren, 255, 255, 0, 30);           //Yellow rect with transparency
+    SDL_SetRenderDrawColor(ren, 255, 255, 0, 20);           //Yellow rect with transparency
     SDL_RenderFillRect(ren, &deadZone);
 }
 
 SDL_Point Camera::getOffset()
 {
     return offset;
+}
+
+SDL_Rect Camera::getZoneRect()
+{
+    return deadZone;
 }

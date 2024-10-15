@@ -1,6 +1,6 @@
 #include "Graphics.h"
 
-bool Graphics::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
+bool Graphics::init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen)
 {
 	int flags = 0;
 	if (fullscreen) { flags = SDL_WINDOW_FULLSCREEN; }
@@ -8,7 +8,7 @@ bool Graphics::init(const char* title, int xpos, int ypos, int width, int height
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		std::cout << "SDL initialised." << std::endl;
 
-		window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+		window = SDL_CreateWindow(title, xPos, yPos, width, height, flags);
 		if (window) {
 			std::cout << "Window created." << std::endl;
 		}
@@ -99,17 +99,17 @@ void Graphics::drawCircle(int x, int y, int radius, Color col, bool fill)
 	}
 }
 
-void Graphics::drawSomething()
+void Graphics::drawSomething(SDL_Point camOffset)
 {
 	// Triangle
-	drawLine(100, 200, 250, 350, Green);
-	drawLine(250, 350, 100, 350, Green);
-	drawLine(100, 350, 100, 200, Green);
+	drawLine(100 - camOffset.x, 200 - camOffset.y, 250 - camOffset.x, 350 - camOffset.y, Green);
+	drawLine(250 - camOffset.x, 350 - camOffset.y, 100 - camOffset.x, 350 - camOffset.y, Green);
+	drawLine(100 - camOffset.x, 350 - camOffset.y, 100 - camOffset.x, 200 - camOffset.y, Green);
 
 	// Circle
-	drawCircle(400, 280, 80, Red, false);
+	drawCircle(400 - camOffset.x, 280 - camOffset.y, 80, Red, false);
 
 	// Rectangle
-	SDL_Rect rect = { 580, 200, 170, 250 }; //x1, y1, w, h
+	SDL_Rect rect = { 580 - camOffset.x, 200 - camOffset.y, 170, 250 }; //x1, y1, w, h
 	drawRect(&rect, Blue);
 }

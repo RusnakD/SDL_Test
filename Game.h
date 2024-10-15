@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "Map.h"
 
 class Game
 {
@@ -12,6 +13,9 @@ public:
 
 	// Main loop
 	void go();
+
+	// Debug info printing various variables
+	void printDebugInfo();
 
 	bool running();
 private:
@@ -33,6 +37,7 @@ private:
 	SDL_Event ent;
 	Graphics gfx;
 	Camera camera;
+	Map map;
 
 	// Game objects
 	Player player;
