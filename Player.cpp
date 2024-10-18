@@ -8,29 +8,25 @@ void Player::draw(SDL_Renderer* argRen)
 void Player::move(Camera &cam)
 {
 	// Verify if the player's not going to go beyond the edge of the currently set "map" (map rectangle more specifically)
-	preventHittingEdgeOfMap();
+	preventHittingEdgeOfMap(cam);
 
-	// Moves RIGHT until reaches the camera screen edge
-	if (xVel > 0 && xPos <= (cam.getZoneRect().x + cam.getZoneRect().w) - playerTex.getTextureWidth()) { xPos += xVel; }
-	// Camera moves RIGHT if player reaches camera screen edge
-	if (xVel > 0 && xPos >= (cam.getZoneRect().x + cam.getZoneRect().w) - playerTex.getTextureWidth()) { cam.move(xVel, 0); }
+	// Defining edges of camera's dead zone where player moves freely. Colliding with the edges results in camera shift.
+	int deadZoneRightEdge = cam.getZoneRect().x + cam.getZoneRect().w - playerTex.getTextureWidth();
+	int deadZoneBottomEdge = cam.getZoneRect().y + cam.getZoneRect().h - playerTex.getTextureHeight();
 
-	// Moves LEFT until reaches the camera screen edge
-	if (xVel < 0 && xPos >= cam.getZoneRect().x) { xPos += xVel; }
-	// Camera moves LEFT if player reaches camera screen edge
-	if (xVel < 0 && xPos <= cam.getZoneRect().x) { cam.move(xVel, 0); }
-
-	// Moves DOWN until reaches the camera screen edge
-	if (yVel > 0 && yPos <= cam.getZoneRect().y + cam.getZoneRect().h - playerTex.getTextureHeight()) { yPos += yVel; }
-	// Camera moves DOWN if player reaches camera screen edge
-	if (yVel > 0 && yPos >= cam.getZoneRect().y + cam.getZoneRect().h - playerTex.getTextureHeight()) { cam.move(0, yVel); }
-
-	// Moves UP until reaches the camera screen edge
-	if (yVel < 0 && yPos >= cam.getZoneRect().y) { yPos += yVel; }
-	// Camera moves UP if player reaches camera screen edge
-	if (yVel < 0 && yPos <= cam.getZoneRect().y) { cam.move(0, yVel); }
+	// Player movement
+	if (xVel > 0 && xPos <= deadZoneRightEdge)		{ xPos += xVel; }
+	if (xVel < 0 && xPos >= cam.getZoneRect().x)	{ xPos += xVel; }
+	if (yVel > 0 && yPos <= deadZoneBottomEdge)		{ yPos += yVel; }
+	if (yVel < 0 && yPos >= cam.getZoneRect().y)	{ yPos += yVel; }
 
 	updateWorldPosition(cam);
+
+	// Camera movement
+	if (xPos <= cam.getZoneRect().x) { cam.move(xVel, 0); }
+	if (xPos >= deadZoneRightEdge) { cam.move(xVel, 0); }
+	if (yPos <= cam.getZoneRect().y) { cam.move(0, yVel); }
+	if (yPos >= deadZoneBottomEdge) { cam.move(0, yVel); }
 }
 
 void Player::init(int x, int y, const char* textureName, SDL_Renderer* argRen)
@@ -82,14 +78,38 @@ SDL_Point Player::getScreenPosition()
 	return SDL_Point({ xPos, yPos });
 }
 
-void Player::preventHittingEdgeOfMap()
+Texture Player::getTexture()
+{
+	return playerTex;
+}
+
+void Player::preventHittingEdgeOfMap(Camera &cam)
 {
 	// LEFT edge
-	if (xVel < 0 && (xPosWorld - speed) <= currentMap.x) { xVel = 0; }
+	if (xVel < 0 && (xPosWorld - speed) <= currentMap.x) {
+		xVel = 0;
+		xPosWorld = currentMap.x;  
+		xPos = xPosWorld - cam.getOffset().x;  
+	}
+
 	// RIGHT edge
-	if (xVel > 0 && (xPosWorld + speed) >= currentMap.x + currentMap.w - playerTex.getTextureWidth()) { xVel = 0; }
+	if (xVel > 0 && (xPosWorld + speed) >= currentMap.x + currentMap.w - playerTex.getTextureWidth()) {
+		xVel = 0;
+		xPosWorld = currentMap.x + currentMap.w - playerTex.getTextureWidth();  
+		xPos = xPosWorld - cam.getOffset().x;  
+	}
+
 	// UPPER edge
-	if (yVel < 0 && (yPosWorld - speed) <= currentMap.y) { yVel = 0; }
+	if (yVel < 0 && (yPosWorld - speed) <= currentMap.y) {
+		yVel = 0;
+		yPosWorld = currentMap.y;			   
+		yPos = yPosWorld - cam.getOffset().y; 
+	}
+
 	// BOTTOM edge
-	if (yVel > 0 && (yPosWorld + speed) >= currentMap.y + currentMap.h - playerTex.getTextureHeight()) { yVel = 0; }
+	if (yVel > 0 && (yPosWorld + speed) >= currentMap.y + currentMap.h - playerTex.getTextureHeight()) {
+		yVel = 0;
+		yPosWorld = currentMap.y + currentMap.h - playerTex.getTextureHeight();  
+		yPos = yPosWorld - cam.getOffset().y;  
+	}
 }

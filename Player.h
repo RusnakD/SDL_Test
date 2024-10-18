@@ -16,9 +16,10 @@ public:
 	int getYVelocity();
 	int getSpeed();
 	void updateWorldPosition(Camera &cam);
+	void preventHittingEdgeOfMap(Camera &cam);
 	SDL_Point getPosition();
 	SDL_Point getScreenPosition();
-	void preventHittingEdgeOfMap();
+	Texture getTexture();
 private:
 	int speed = 7;
 	int xVel = 0;

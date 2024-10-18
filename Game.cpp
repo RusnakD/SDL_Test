@@ -42,10 +42,17 @@ void Game::printDebugInfo()
 {
 	using namespace std;
 	cout << endl << endl;
+	cout << "Texture width: " << player.getTexture().getTextureWidth() << endl;
+	cout << "Texture height: " << player.getTexture().getTextureHeight() << endl;
+	cout << endl;
 	cout << "Player worldX: " << player.getPosition().x << endl;
 	cout << "Player worldY: " << player.getPosition().y << endl;
 	cout << "Player xPos: " << player.getScreenPosition().x << endl;
 	cout << "Player yPos: " << player.getScreenPosition().y << endl;
+	cout << "Cam offset X: " << camera.getOffset().x << endl;
+	cout << "Cam offset Y: " << camera.getOffset().y << endl;
+	cout << "Player xPos + cam offset: " << player.getScreenPosition().x + camera.getOffset().x << endl;
+	cout << "Player yPos + cam offset: " << player.getScreenPosition().y + camera.getOffset().y << endl;
 }
 
 bool Game::running()
@@ -56,6 +63,8 @@ bool Game::running()
 void Game::update()
 {
 	player.move(camera);
+
+	// MOVE PLAYER TRACKING FNS TO CAMERA
 }
 
 void Game::capFramerate()
